@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="BottomNavigationMainStyle" parent="@style/Widget.MaterialComponents.BottomNavigationView">
+        <item name="itemIconTint">@color/main_bottom_nav_item_selection</item>
+        <item name="itemTextColor">@color/main_bottom_nav_item_selection</item>
+        <item name="itemTextAppearanceActive">@style/BottomNavigationMainTexTextAppearanceActive</item>
+        <item name="itemTextAppearanceInactive">@style/BottomNavigationMainTexTextAppearanceInactive</item>
+        <item name="itemRippleColor">@color/primary</item>
+        <item name="labelVisibilityMode">labeled</item>
+    </style>
+
+    <style name="BottomNavigationMainTexTextAppearanceActive" parent="@style/BottomNavigationMainTexTextAppearance">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="BottomNavigationMainTexTextAppearanceInactive" parent="@style/BottomNavigationMainTexTextAppearance">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="BottomNavigationMainTexTextAppearance">
+        <item name="android:fontFamily">@font/regular</item>
+    </style>
+</resources>

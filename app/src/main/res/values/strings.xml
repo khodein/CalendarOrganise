@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">CalendarOrganise</string>
+
+
+    <item name="main_bottom_navigation_group" type="id"/>
+    <item type="id" name="tab_entry_home_id"/>
+    <item type="id" name="tab_entry_calendar_id"/>
+    <item type="id" name="tab_entry_clock_id"/>
+    <item type="id" name="tab_entry_profile_id"/>
+
+    <string name="tab_entry_home_name">Home</string>
+    <string name="tab_entry_calendar_name">Calendar</string>
+    <string name="tab_entry_clock_name">Clock</string>
+    <string name="tab_entry_profile_name">Profile</string>
+</resources>

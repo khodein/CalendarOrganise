@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="statusBar">@color/white</color>
+    <color name="navigationBar">@color/black</color>
+
+    <color name="primary">#DE496E</color>
+    <color name="primary_30">#4DDE496E</color>
+    <color name="primaryText">#202020</color>
+    <color name="primaryText_20">#4D202020</color>
+
+    <color name="secondary">#A4B9DE</color>
+    <color name="secondaryText">#8F8F8F</color>
+
+    <color name="background">#F1F5F9</color>
+    <color name="tetriatyText">#BCBCBC</color>
+
+    <color name="transparent">@android:color/transparent</color>
+</resources>

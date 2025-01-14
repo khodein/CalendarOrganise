@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Regular">
+        <item name="android:fontFamily">@font/</item>
+    </style>
+    
+    <style name="Bold">
+        <item name="android:fontFamily">@font/bold</item>
+
+    </style>
+
+    <style name="ExtraBold">
+        <item name="android:fontFamily">@font/extrabold</item>
+    </style>
+    
+    <style name="Regular.20">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="Bold.20">
+        <item name="android:textSize">20sp</item>
+        <item name="lineHeight">20sp</item>
+    </style>
+</resources>
