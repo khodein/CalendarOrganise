@@ -16,3 +16,9 @@ val Float.spToPx: Int
         Resources.getSystem().displayMetrics
     ).toInt()
 
+val screenHeight: Int
+    get() = Resources.getSystem().displayMetrics.heightPixels
+
+val screenWidth: Int
+    get() = Resources.getSystem().displayMetrics.widthPixels
+

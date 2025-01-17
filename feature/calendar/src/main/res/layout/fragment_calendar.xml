@@ -19,6 +19,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
+        <ru.calendar.feature.calendar.ui.calendar.month.CalendarMonthItemView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
     </com.google.android.material.appbar.AppBarLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
