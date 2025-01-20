@@ -7,6 +7,7 @@ import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.Month
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.daysUntil
@@ -23,6 +24,9 @@ import kotlinx.datetime.yearsUntil
 value class LocalDateFormatter(
     val localDateTime: LocalDateTime
 ) {
+    val month: Month
+        get() = localDateTime.month
+
     val dayOfMonth: Int
         get() = localDateTime.dayOfMonth
 

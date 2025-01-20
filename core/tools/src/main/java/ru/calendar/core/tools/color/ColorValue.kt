@@ -15,10 +15,19 @@ sealed interface ColorValue {
         val primary30: ColorValue
             get() = Res(R.color.primary_30)
 
+        val black: ColorValue
+            get() = Res(R.color.black)
+
         val secondaryText: ColorValue
             get() = Res(R.color.secondaryText)
 
         val white: ColorValue
             get() = Res(R.color.white)
+
+        val primary: ColorValue
+            get() = Res(R.color.primary)
+
+        val tetriaty: ColorValue
+            get() = Res(R.color.tetriatyText)
     }
 }

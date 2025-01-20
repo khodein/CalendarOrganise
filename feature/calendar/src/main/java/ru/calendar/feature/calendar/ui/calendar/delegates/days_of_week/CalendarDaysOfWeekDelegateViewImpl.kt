@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.text.TextPaint
+import android.view.MotionEvent
 import androidx.annotation.ColorInt
 import kotlinx.datetime.DayOfWeek
 import ru.calendar.core.tools.dimension.DimensionValue
@@ -24,6 +25,7 @@ class CalendarDaysOfWeekDelegateViewImpl(
 
     private val textPaint: TextPaint = TextPaint().apply {
         isAntiAlias = true
+        isDither = true
         color = textColorInt
         typeface = context.getFont(resR.font.regular)
         textSize = this@CalendarDaysOfWeekDelegateViewImpl.textSize
@@ -35,35 +37,30 @@ class CalendarDaysOfWeekDelegateViewImpl(
     private val height: Float
         get() {
             val fontMetrics = textPaint.fontMetrics
-            return (fontMetrics.bottom - fontMetrics.top)
+            return (fontMetrics.descent - fontMetrics.ascent)
         }
 
-    private val stepWidth: Float = DimensionValue.Dp(25).value.toFloat()
-    private val stepsWidth: Float
-        get() = stepWidth * 6f
+    private val stepWidth: Float = params.stepWidth.value.toFloat()
+    private val stepsWidth: Float = stepWidth * 6f
 
-    private val textWidth: Float = textPaint.measureText(daysOfWeek.first())
-    private val textsWidth: Float
-        get() = textWidth * 7f
+    private val cellWidth: Float = params.cellWidth.value.toFloat()
+    private val cellsWidth: Float = cellWidth * 7f
+
+    private val indentXtoX: Float = stepWidth + cellWidth
 
     private val startX: Float
         get() {
-            val contentWidth = textsWidth + stepsWidth
+            val contentWidth = cellsWidth + stepsWidth
             val paddingLeftOrRight = (width - contentWidth) / 2f
-            return paddingLeftOrRight + (textWidth / 2f)
+            return paddingLeftOrRight + (cellWidth / 2f)
         }
-
-    private val startY: Float
-        get() = height - (textPaint.textSize / 2f)
-
+    private val startY: Float = textPaint.textSize
 
     override fun getHeight(): Int {
         return height.toInt()
     }
 
-    private val indentXtoX: Float = stepWidth + textWidth
-
-    override fun drawDaysOfWeek(canvas: Canvas) {
+    override fun draw(canvas: Canvas) {
         var x = startX
         val y = startY
 
@@ -73,7 +70,9 @@ class CalendarDaysOfWeekDelegateViewImpl(
         }
     }
 
-    private fun mapDayOfWeek(dayOfWeek: DayOfWeek): String {
-        return dayOfWeek.name.substring(0, 3).lowercase().replaceFirstChar { it.titlecase() }
+    private companion object {
+        fun mapDayOfWeek(dayOfWeek: DayOfWeek): String {
+            return dayOfWeek.name.substring(0, 3).lowercase().replaceFirstChar { it.titlecase() }
+        }
     }
 }
