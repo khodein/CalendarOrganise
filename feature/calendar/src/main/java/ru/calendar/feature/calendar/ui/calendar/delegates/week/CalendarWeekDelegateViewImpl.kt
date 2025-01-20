@@ -1,39 +1,40 @@
 package ru.calendar.feature.calendar.ui.calendar.delegates.week
 
-import android.content.Context
 import android.graphics.Canvas
 import android.view.MotionEvent
 import kotlinx.datetime.Month
 import ru.calendar.core.tools.formatter.LocalDateFormatter
+import ru.calendar.feature.calendar.ui.calendar.CalendarParams
 import ru.calendar.feature.calendar.ui.calendar.day.Day
-import ru.calendar.feature.calendar.ui.calendar.delegates.BaseCalendarDelegate
+import ru.calendar.feature.calendar.ui.calendar.delegates.BaseCalendarDelegateView
+import ru.calendar.feature.calendar.ui.calendar.delegates.CalendarProvider
+import ru.calendar.feature.calendar.ui.calendar.delegates.CalendarType
 
 class CalendarWeekDelegateViewImpl(
-    private val params: Params,
-    provider: Provider,
-    context: Context,
-) : BaseCalendarDelegate(
+    private val params: CalendarParams,
+    provider: CalendarProvider,
+) : BaseCalendarDelegateView(
     params = params,
     provider = provider,
-    context = context,
 ), CalendarWeekDelegateView {
 
     override var days: List<Day> = emptyList()
 
     private var month: Month = LocalDateFormatter.nowInSystemDefault().month
+    override val type: CalendarType = CalendarType.WEEK
 
-    override val stepWidth: Float = params.stepWidth.value.toFloat()
+    override val stepWidth: Float = params.step.width
     override val stepsWidth: Float
         get() = stepWidth * 6f
 
     override val stepHeight: Float = 0f
     override val stepsHeight: Float = 0f
 
-    override val cellWidth: Float = params.cellWidth.value.toFloat()
+    override val cellWidth: Float = params.cell.width
     override val cellsWidth: Float
         get() = cellWidth * 7f
 
-    override val cellHeight: Float = params.cellHeight.value.toFloat()
+    override val cellHeight: Float = params.cell.height
     override val cellsHeight: Float
         get() = cellHeight * 1f
 
@@ -66,6 +67,7 @@ class CalendarWeekDelegateViewImpl(
         this.focus = focus
 
         var date = startDayOfWeek
+
         var x = startX
         val y = startY
 

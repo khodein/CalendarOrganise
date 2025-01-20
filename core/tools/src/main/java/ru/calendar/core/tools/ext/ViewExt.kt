@@ -116,6 +116,16 @@ fun View.setWidth(width: Int) {
     }
 }
 
+fun View.setSize(
+    width: Int,
+    height: Int
+) {
+    val lp = layoutParams
+    lp.width = width
+    lp.height = height
+    layoutParams = lp
+}
+
 fun View.setHeightValue(value: DimensionValue) {
     setHeight(value.value)
 }

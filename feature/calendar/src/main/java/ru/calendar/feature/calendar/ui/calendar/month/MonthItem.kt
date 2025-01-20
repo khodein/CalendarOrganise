@@ -1,17 +1,18 @@
 package ru.calendar.feature.calendar.ui.calendar.month
 
-import ru.calendar.core.tools.formatter.LocalDateFormatter
+import ru.calendar.feature.calendar.ui.calendar.delegates.daysOfWeek.CalendarDaysOfWeekDelegateView
+import ru.calendar.feature.calendar.ui.calendar.delegates.month.CalendarMonthDelegateView
 
 class MonthItem {
 
     interface View {
         fun bindState(state: State)
-        fun getMonthHeight(): Int
+        fun onUpdateView()
     }
 
     data class State(
-        val focus: LocalDateFormatter? = null,
-        val date: LocalDateFormatter,
-        val onClickFocus: ((focus: LocalDateFormatter) -> Unit)? = null
+        val id: String,
+        val daysOfWeekDelegateView: CalendarDaysOfWeekDelegateView,
+        val monthDelegateView: CalendarMonthDelegateView,
     )
 }

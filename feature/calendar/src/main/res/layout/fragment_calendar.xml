@@ -19,7 +19,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <ru.calendar.feature.calendar.ui.calendar.month.MonthItemView
+        <ru.calendar.feature.calendar.ui.calendar.CalendarItemView
+            android:id="@+id/calendarItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

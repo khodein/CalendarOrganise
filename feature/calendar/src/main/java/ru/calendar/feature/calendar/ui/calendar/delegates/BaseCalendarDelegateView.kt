@@ -1,64 +1,33 @@
 package ru.calendar.feature.calendar.ui.calendar.delegates
 
 import android.animation.ValueAnimator
-import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RectF
 import android.text.TextPaint
 import android.view.MotionEvent
-import androidx.annotation.ColorInt
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
-import ru.calendar.core.res.R
-import ru.calendar.core.tools.color.ColorValue
-import ru.calendar.core.tools.dimension.DimensionValue
 import ru.calendar.core.tools.ext.dp
-import ru.calendar.core.tools.ext.getColor
-import ru.calendar.core.tools.ext.getFont
 import ru.calendar.core.tools.formatter.LocalDateFormatter
+import ru.calendar.feature.calendar.ui.calendar.CalendarParams
 import ru.calendar.feature.calendar.ui.calendar.day.Day
 
-abstract class BaseCalendarDelegate(
-    private val provider: Provider,
-    params: Params,
-    context: Context,
+abstract class BaseCalendarDelegateView(
+    private val provider: CalendarProvider,
+    private val params: CalendarParams,
 ) {
     protected var date: LocalDateFormatter = LocalDateFormatter.nowInSystemDefault().startOfTheDay()
     protected var focus: LocalDateFormatter? = null
 
-    private val today: LocalDateFormatter = LocalDateFormatter.nowInSystemDefault().startOfTheDay()
-    protected val todayRadius: Float = DimensionValue.Dp(8).value.toFloat()
-    protected val todayRectF = RectF()
+    private val todayRectF = RectF()
 
     private var focusAnimation: ValueAnimator? = null
-    protected var focusRadius: Float = 0f
-    protected val endFocusRadius = DimensionValue.Dp(14).value.toFloat()
+    private var focusRadius: Float = 0f
 
     abstract var days: List<Day>
 
-    protected val textSize: Float = params.textSize.value.toFloat()
-
-    @ColorInt
-    private val textFocusColor: Int = params.textFocusColor.getColor(context)
-
-    @ColorInt
-    private val textTodayColor: Int = params.textTodayColor.getColor(context)
-
-    @ColorInt
-    private val textInActiveColor: Int = params.textInActiveColor.getColor(context)
-
-    @ColorInt
-    private val textNoInMonthColor: Int = params.textNoInMonthColor.getColor(context)
-
-    @ColorInt
-    protected val textTodayBackgroundColor: Int = params.textTodayBackgroundColor.getColor(context)
-
-    @ColorInt
-    protected val textFocusBackgroundColor: Int =  params.textFocusBackgroundColor.getColor(context)
-
-    @ColorInt
-    private val transparentColorInt: Int = ColorValue.transparent.getColor(context)
+    abstract val type: CalendarType
 
     abstract val cellWidth: Float
     abstract val cellsWidth: Float
@@ -84,15 +53,15 @@ abstract class BaseCalendarDelegate(
     private val textPaint: TextPaint = TextPaint().apply {
         isAntiAlias = true
         isDither = true
-        typeface = context.getFont(R.font.bold)
-        textSize = this@BaseCalendarDelegate.textSize
+        typeface = params.text.typeface
+        textSize = params.text.textSize
         baselineShift = (textSize / 2 - descent()).toInt()
         textAlign = Paint.Align.CENTER
     }
 
     private val backgroundPaint: Paint = Paint().apply {
         isAntiAlias = true
-        color = textTodayBackgroundColor
+        color = params.backgroundCell.emptyColorInt
     }
 
     protected fun mapDay(
@@ -103,20 +72,20 @@ abstract class BaseCalendarDelegate(
         isDaysBefore: Boolean,
         isDaysAfter: Boolean,
     ): Day {
-        val isToday: Boolean = date == today
+        val isToday: Boolean = date == params.today
         val isFocus: Boolean = date == focus?.startOfTheDay()
 
         val textColorInt = when {
-            isFocus -> textFocusColor
-            isToday -> textTodayColor
-            isDaysAfter || isDaysBefore -> textNoInMonthColor
-            else -> textInActiveColor
+            isFocus -> params.text.focusColorInt
+            isToday -> params.text.todayColorInt
+            isDaysAfter || isDaysBefore -> params.text.noInMonthColorInt
+            else -> params.text.inActiveColorInt
         }
 
         val backgroundColorInt = when {
-            isFocus -> textFocusBackgroundColor
-            isToday -> textTodayBackgroundColor
-            else -> transparentColorInt
+            isFocus -> params.backgroundCell.focusColorInt
+            isToday -> params.backgroundCell.todayColorInt
+            else -> params.backgroundCell.emptyColorInt
         }
 
         val pathCellHeight = cellHeight / 2f
@@ -156,19 +125,20 @@ abstract class BaseCalendarDelegate(
     }
 
     private fun onAnimateFocus(touchDay: Day) {
-        focusAnimation = ValueAnimator.ofFloat(0f, endFocusRadius).apply {
+        focusAnimation =
+            ValueAnimator.ofFloat(params.focusRadius.start, params.focusRadius.end).apply {
             duration = 200
             doOnStart {
-                focusRadius = 0f
+                focusRadius = params.focusRadius.start
             }
             doOnEnd {
-                focusRadius = endFocusRadius
+                focusRadius = params.focusRadius.end
                 focusAnimation = null
                 provider.onClickFocus(touchDay.date)
             }
             addUpdateListener { animation ->
                 focusRadius = animation.animatedValue as Float
-                provider.onUpdateView()
+                provider.onUpdateView(type)
             }
             start()
         }
@@ -218,7 +188,7 @@ abstract class BaseCalendarDelegate(
 
             when {
                 day.isFocus -> {
-                    backgroundPaint.color = textFocusBackgroundColor
+                    backgroundPaint.color = params.backgroundCell.focusColorInt
                     canvas.drawCircle(
                         day.x,
                         day.y - cellHeight / 4f,
@@ -228,11 +198,11 @@ abstract class BaseCalendarDelegate(
                 }
 
                 day.isToday -> {
-                    backgroundPaint.color = textTodayBackgroundColor
+                    backgroundPaint.color = params.backgroundCell.todayColorInt
                     canvas.drawRoundRect(
                         todayRectF,
-                        todayRadius,
-                        todayRadius,
+                        params.todayRadius,
+                        params.todayRadius,
                         backgroundPaint
                     )
                 }
@@ -240,25 +210,5 @@ abstract class BaseCalendarDelegate(
 
             canvas.drawText(day.text, day.x, day.y, textPaint)
         }
-    }
-
-    data class Params(
-        val width: Int,
-        val startY: Int,
-        val cellWidth: DimensionValue.Dp,
-        val cellHeight: DimensionValue.Dp,
-        val stepWidth: DimensionValue.Dp,
-        val textNoInMonthColor: ColorValue,
-        val textInActiveColor: ColorValue,
-        val textSize: DimensionValue.SpToPx,
-        val textFocusColor: ColorValue,
-        val textTodayColor: ColorValue,
-        val textTodayBackgroundColor: ColorValue,
-        val textFocusBackgroundColor: ColorValue,
-    )
-
-    interface Provider {
-        fun onClickFocus(focus: LocalDateFormatter)
-        fun onUpdateView()
     }
 }
