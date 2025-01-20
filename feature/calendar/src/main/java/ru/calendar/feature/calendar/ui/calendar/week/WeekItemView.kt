@@ -6,6 +6,8 @@ import android.graphics.Canvas
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup.LayoutParams
+import ru.calendar.core.recycler.RecyclerItemView
 import ru.calendar.core.tools.ext.setSize
 import ru.calendar.feature.calendar.ui.calendar.delegates.daysOfWeek.CalendarDaysOfWeekDelegateView
 import ru.calendar.feature.calendar.ui.calendar.delegates.week.CalendarWeekDelegateView
@@ -14,15 +16,15 @@ class WeekItemView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : View(context, attrs, defStyleAttr), WeekItem.View {
+) : View(context, attrs, defStyleAttr), WeekItem.View, RecyclerItemView<WeekItem.State> {
 
     private var daysOfWeekDelegateView: CalendarDaysOfWeekDelegateView? = null
     private var weekDelegateView: CalendarWeekDelegateView? = null
 
     override fun bindState(state: WeekItem.State) {
-        setSize(
-            width = state.width,
-            height = state.height
+        layoutParams = LayoutParams(
+            state.width,
+            state.height
         )
         this.daysOfWeekDelegateView = state.calendarDaysOfWeekDelegateView
         this.weekDelegateView = state.calendarWeekDelegateView
@@ -31,7 +33,10 @@ class WeekItemView @JvmOverloads constructor(
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-        weekDelegateView?.onTouchEvent(event)
+        weekDelegateView?.onTouchEvent(
+            event = event,
+            onInvalidate = ::postInvalidate
+        )
         return true
     }
 

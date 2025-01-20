@@ -32,11 +32,10 @@ class MonthItemView @JvmOverloads constructor(
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-        monthDelegateView?.onTouchEvent(event)
+        monthDelegateView?.onTouchEvent(
+            event = event,
+            onInvalidate = ::postInvalidate
+        )
         return true
-    }
-
-    override fun onUpdateView() {
-        postInvalidate()
     }
 }

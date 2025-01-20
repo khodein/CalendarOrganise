@@ -11,9 +11,10 @@ interface CalendarWeekDelegateView {
         startDayOfWeek: LocalDateFormatter,
         month: Month,
         focus: LocalDateFormatter? = null,
+        count: Int,
     )
 
-    fun onTouchEvent(event: MotionEvent?)
+    fun onTouchEvent(event: MotionEvent?, onInvalidate: () -> Unit)
 
     fun getHeight(): Int
 

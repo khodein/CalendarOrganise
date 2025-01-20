@@ -7,7 +7,6 @@ class MonthItem {
 
     interface View {
         fun bindState(state: State)
-        fun onUpdateView()
     }
 
     data class State(

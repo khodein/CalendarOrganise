@@ -77,10 +77,12 @@ class CalendarMonthDelegateViewImpl(
         var x: Float = startX
         var y: Float = startY
         var count = 0
+        var weekCount = 0
 
         fun setCount() {
             if (count == 6) {
                 count = 0
+                weekCount ++
                 x = startX
                 y += indentYtoY
             } else {
@@ -95,6 +97,7 @@ class CalendarMonthDelegateViewImpl(
                 repeat(numberOfDaysBeforeMonth) {
                     add(
                         mapDay(
+                            count = weekCount,
                             x = x,
                             y = y,
                             focus = focus,
@@ -116,6 +119,7 @@ class CalendarMonthDelegateViewImpl(
             repeat(monthDays) {
                 add(
                     mapDay(
+                        count = weekCount,
                         x = x,
                         y = y,
                         focus = focus,
@@ -135,6 +139,7 @@ class CalendarMonthDelegateViewImpl(
                 repeat(numberOfDaysAfterMonth) {
                     add(
                         mapDay(
+                            count = weekCount,
                             x = x,
                             y = y,
                             focus = focus,
@@ -158,10 +163,11 @@ class CalendarMonthDelegateViewImpl(
         }
     }
 
-    override fun onTouchEvent(event: MotionEvent?) {
+    override fun onTouchEvent(event: MotionEvent?, onInvalidate: () -> Unit) {
         onClickDay(
             event = event,
-            onUpdate = ::update
+            onUpdate = ::update,
+            onInvalidate = onInvalidate
         )
     }
 

@@ -136,6 +136,18 @@ value class LocalDateFormatter(
         )
     }
 
+    fun plusWeek(
+        quantity: Int,
+        timeZone: TimeZone = getSystemDefault(),
+    ): LocalDateFormatter {
+        return this.setOperation(
+            quantity = quantity,
+            unit = DateTimeUnit.WEEK,
+            timeZone = timeZone,
+            operator = Operator.PLUS
+        )
+    }
+
     /**Возвращает дату с прибаленным кол-вом дней*/
     fun plusDays(
         quantity: Int,

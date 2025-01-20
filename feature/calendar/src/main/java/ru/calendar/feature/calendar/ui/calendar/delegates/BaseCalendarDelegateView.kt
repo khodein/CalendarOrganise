@@ -19,6 +19,7 @@ abstract class BaseCalendarDelegateView(
 ) {
     protected var date: LocalDateFormatter = LocalDateFormatter.nowInSystemDefault().startOfTheDay()
     protected var focus: LocalDateFormatter? = null
+    protected var count: Int = 0
 
     private val todayRectF = RectF()
 
@@ -65,6 +66,7 @@ abstract class BaseCalendarDelegateView(
     }
 
     protected fun mapDay(
+        count: Int,
         x: Float,
         y: Float,
         focus: LocalDateFormatter? = null,
@@ -73,7 +75,7 @@ abstract class BaseCalendarDelegateView(
         isDaysAfter: Boolean,
     ): Day {
         val isToday: Boolean = date == params.today
-        val isFocus: Boolean = date == focus?.startOfTheDay()
+        val isFocus: Boolean = date == focus
 
         val textColorInt = when {
             isFocus -> params.text.focusColorInt
@@ -86,6 +88,10 @@ abstract class BaseCalendarDelegateView(
             isFocus -> params.backgroundCell.focusColorInt
             isToday -> params.backgroundCell.todayColorInt
             else -> params.backgroundCell.emptyColorInt
+        }
+
+        if (isFocus) {
+            focusRadius = params.focusRadius.end
         }
 
         val pathCellHeight = cellHeight / 2f
@@ -107,6 +113,7 @@ abstract class BaseCalendarDelegateView(
         }
 
         return Day(
+            count = count,
             x = x,
             y = y,
             text = date.dayOfMonth.toString(),
@@ -124,24 +131,32 @@ abstract class BaseCalendarDelegateView(
         )
     }
 
-    private fun onAnimateFocus(touchDay: Day) {
+    private fun onAnimateFocus(touchDay: Day, onInvalidate: () -> Unit) {
         focusAnimation =
             ValueAnimator.ofFloat(params.focusRadius.start, params.focusRadius.end).apply {
-            duration = 200
-            doOnStart {
-                focusRadius = params.focusRadius.start
+                duration = 100
+                doOnStart {
+                    focusRadius = params.focusRadius.start
+                }
+                doOnEnd {
+                    focusRadius = params.focusRadius.end
+                    focusAnimation = null
+                    val focusCount = when(type) {
+                        CalendarType.WEEK -> count
+                        CalendarType.MONTH -> touchDay.count
+                    }
+                    provider.onClickFocus(
+                        focus = touchDay.date,
+                        type = type,
+                        count = focusCount,
+                    )
+                }
+                addUpdateListener { animation ->
+                    focusRadius = animation.animatedValue as Float
+                    onInvalidate.invoke()
+                }
+                start()
             }
-            doOnEnd {
-                focusRadius = params.focusRadius.end
-                focusAnimation = null
-                provider.onClickFocus(touchDay.date)
-            }
-            addUpdateListener { animation ->
-                focusRadius = animation.animatedValue as Float
-                provider.onUpdateView(type)
-            }
-            start()
-        }
     }
 
     protected fun onClickDay(
@@ -149,7 +164,8 @@ abstract class BaseCalendarDelegateView(
         onUpdate: (
             date: LocalDateFormatter,
             focus: LocalDateFormatter,
-        ) -> Unit
+        ) -> Unit,
+        onInvalidate: () -> Unit
     ) {
         if (focusAnimation != null) {
             return
@@ -178,7 +194,7 @@ abstract class BaseCalendarDelegateView(
                 date,
                 day.date
             )
-            onAnimateFocus(day)
+            onAnimateFocus(touchDay = day, onInvalidate = onInvalidate)
         }
     }
 

@@ -13,7 +13,7 @@ interface CalendarMonthDelegateView {
         focus: LocalDateFormatter? = null,
     )
 
-    fun onTouchEvent(event: MotionEvent?)
+    fun onTouchEvent(event: MotionEvent?, onInvalidate: () -> Unit)
 
     fun getHeight(): Int
 }

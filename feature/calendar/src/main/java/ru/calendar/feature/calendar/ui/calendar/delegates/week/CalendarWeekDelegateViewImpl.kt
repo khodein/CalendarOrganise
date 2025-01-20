@@ -60,11 +60,13 @@ class CalendarWeekDelegateViewImpl(
     override fun update(
         startDayOfWeek: LocalDateFormatter,
         month: Month,
-        focus: LocalDateFormatter?
+        focus: LocalDateFormatter?,
+        count: Int,
     ) {
         this.date = startDayOfWeek
         this.month = month
         this.focus = focus
+        this.count = count
 
         var date = startDayOfWeek
 
@@ -72,17 +74,18 @@ class CalendarWeekDelegateViewImpl(
         val y = startY
 
         days = buildList<Day>(WEEK_COUNT) {
-            val isDayBefore = date.month < month
-            val isDayAfter = date.month > month
+            repeat(WEEK_COUNT) { count ->
+                val isDayBefore = date.month > month
+                val isDayAfter = date.month < month
 
-            repeat(WEEK_COUNT) {
                 mapDay(
                     x = x,
                     y = y,
                     focus = focus,
                     date = date,
                     isDaysAfter = isDayAfter,
-                    isDaysBefore = isDayBefore
+                    isDaysBefore = isDayBefore,
+                    count = count
                 ).let(::add)
 
                 date = date.plusDays(1)
@@ -91,16 +94,18 @@ class CalendarWeekDelegateViewImpl(
         }
     }
 
-    override fun onTouchEvent(event: MotionEvent?) {
+    override fun onTouchEvent(event: MotionEvent?, onInvalidate: () -> Unit) {
         onClickDay(
             event = event,
             onUpdate = { date, focus ->
                 update(
                     startDayOfWeek = date,
                     focus = focus,
-                    month = month
+                    month = month,
+                    count = count
                 )
-            }
+            },
+            onInvalidate = onInvalidate
         )
     }
 

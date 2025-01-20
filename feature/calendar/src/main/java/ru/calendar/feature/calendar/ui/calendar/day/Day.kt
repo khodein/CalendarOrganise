@@ -4,6 +4,7 @@ import androidx.annotation.ColorInt
 import ru.calendar.core.tools.formatter.LocalDateFormatter
 
 data class Day(
+    val count: Int,
     val x: Float,
     val y: Float,
     val text: String,
