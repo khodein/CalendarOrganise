@@ -3,7 +3,7 @@ package ru.calendar.feature.calendar.ui.calendar.delegates.month
 import android.graphics.Canvas
 import android.view.MotionEvent
 import ru.calendar.core.tools.formatter.LocalDateFormatter
-import ru.calendar.feature.calendar.ui.calendar.CalendarParams
+import ru.calendar.feature.calendar.ui.calendar.delegates.params.CalendarParams
 import ru.calendar.feature.calendar.ui.calendar.day.Day
 import ru.calendar.feature.calendar.ui.calendar.delegates.BaseCalendarDelegateView
 import ru.calendar.feature.calendar.ui.calendar.delegates.CalendarProvider

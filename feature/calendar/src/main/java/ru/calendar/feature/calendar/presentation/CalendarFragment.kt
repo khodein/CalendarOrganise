@@ -29,5 +29,8 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding, NavigatorScreen.C
     private fun setObservable() = with(viewModel) {
         headerCalendarFlow.filterNotNull()
             .observe(viewLifecycleOwner, binding.calendarHeader::bindState)
+
+        calendarFlow.filterNotNull()
+            .observe(viewLifecycleOwner, binding.calendarItem::bindState)
     }
 }

@@ -1,4 +1,4 @@
-package ru.calendar.feature.calendar.ui.calendar
+package ru.calendar.feature.calendar.ui.calendar.delegates.params
 
 import android.graphics.Typeface
 import androidx.annotation.ColorInt

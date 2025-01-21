@@ -4,7 +4,7 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.text.TextPaint
 import kotlinx.datetime.DayOfWeek
-import ru.calendar.feature.calendar.ui.calendar.CalendarDaysOfWeekParams
+import ru.calendar.feature.calendar.ui.calendar.delegates.params.CalendarDaysOfWeekParams
 
 class CalendarDaysOfWeekDelegateViewImpl(
     params: CalendarDaysOfWeekParams,

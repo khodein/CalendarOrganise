@@ -27,6 +27,9 @@ value class LocalDateFormatter(
     val month: Month
         get() = localDateTime.month
 
+    val year: Int
+        get() = localDateTime.year
+
     val dayOfMonth: Int
         get() = localDateTime.dayOfMonth
 

@@ -1,5 +1,7 @@
 package ru.calendar.feature.calendar.ui.calendar
 
+import android.animation.Animator
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
@@ -9,6 +11,8 @@ import android.view.MotionEvent
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import androidx.annotation.ColorInt
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.animation.doOnEnd
+import androidx.core.animation.doOnStart
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.PagerSnapHelper
 import ru.calendar.core.recycler.adapter.RecyclerAdapter
@@ -34,6 +38,8 @@ import ru.calendar.feature.calendar.ui.calendar.delegates.month.CalendarMonthDel
 import ru.calendar.feature.calendar.ui.calendar.delegates.month.CalendarMonthDelegateViewImpl
 import ru.calendar.feature.calendar.ui.calendar.delegates.week.CalendarWeekDelegateView
 import ru.calendar.feature.calendar.ui.calendar.delegates.week.CalendarWeekDelegateViewImpl
+import ru.calendar.feature.calendar.ui.calendar.mapper.CalendarItemMapper
+import ru.calendar.feature.calendar.ui.calendar.mapper.CalendarItemMapperImpl
 import ru.calendar.feature.calendar.ui.calendar.month.MonthItem
 import ru.calendar.feature.calendar.ui.calendar.week.WeekItem
 import kotlin.math.max
@@ -46,11 +52,19 @@ class CalendarItemView @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs, defStyleAttr), CalendarItem.View, CalendarProvider {
 
     private val binding = ViewCalendarItemBinding.inflate(LayoutInflater.from(context), this)
+    private var state: CalendarItem.State? = null
 
-    private val calendarWidth: Int = screenWidth
+    private val calendarItemMapper: CalendarItemMapper = CalendarItemMapperImpl
 
-    private var date: LocalDateFormatter = LocalDateFormatter.nowInSystemDefault()
-    private var focus: LocalDateFormatter? = null
+    private val calendarWidth: Int by lazy { screenWidth }
+
+    private val date: LocalDateFormatter
+        get() = state?.date ?: LocalDateFormatter.nowInSystemDefault()
+
+    private val focus: LocalDateFormatter?
+        get() = state?.focus
+
+    private var calendarHeightAnimator: Animator? = null
 
     @ColorInt
     private val backgroundColorInt = ColorValue.white.getColor(context)
@@ -70,50 +84,27 @@ class CalendarItemView @JvmOverloads constructor(
     private var weekList: List<WeekItem.State> = emptyList()
     private var lastCountWeekFocus: Int? = null
 
+    private val isMonth: Boolean
+        get() = state?.isMonth ?: true
+
     private val daysOfWeekParams by lazy {
-        CalendarDaysOfWeekParams(
+        calendarItemMapper.mapDayOfWeekParams(
             width = calendarWidth,
-            text = CalendarDaysOfWeekParams.Text(
-                size = DimensionValue.SpToPx(12f).value.toFloat(),
-                colorInt = ColorValue.secondaryText.getColor(context),
-                typeface = context.getFont(FontValue.REGULAR.fontResId)
-            ),
-            step = CalendarDaysOfWeekParams.Step(width = stepWidth),
-            cell = CalendarDaysOfWeekParams.Cell(width = cellWidth),
+            stepWidth = stepWidth,
+            cellWidth = cellWidth,
+            context = context,
         )
     }
 
     private val calendarParams by lazy {
-        CalendarParams(
+        calendarItemMapper.mapCalendarParams(
             width = calendarWidth,
-            today = LocalDateFormatter.nowInSystemDefault().startOfTheDay(),
             startY = daysOfWeekDelegateView.getHeight() + indentDayOfWeekToDayOfMonth,
-            todayRadius = DimensionValue.Dp(8).value.toFloat(),
-            text = CalendarParams.Text(
-                textSize = DimensionValue.SpToPx(14f).value.toFloat(),
-                noInMonthColorInt = ColorValue.tetriaty.getColor(context),
-                inActiveColorInt = ColorValue.black.getColor(context),
-                todayColorInt = ColorValue.primary.getColor(context),
-                focusColorInt = ColorValue.white.getColor(context),
-                typeface = context.getFont(FontValue.BOLD.fontResId)
-            ),
-            step = CalendarParams.Step(
-                width = stepWidth,
-                height = stepHeight
-            ),
-            cell = CalendarParams.Cell(
-                width = cellWidth,
-                height = cellHeight,
-            ),
-            backgroundCell = CalendarParams.BackgroundCell(
-                focusColorInt = ColorValue.primary.getColor(context),
-                todayColorInt = ColorValue.primary30.getColor(context),
-                emptyColorInt = ColorValue.transparent.getColor(context)
-            ),
-            focusRadius = CalendarParams.FocusRadius(
-                start = DimensionValue.Dp(7).value.toFloat(),
-                end = DimensionValue.Dp(14).value.toFloat()
-            )
+            stepWidth = stepWidth,
+            stepHeight = stepHeight,
+            cellHeight = cellHeight,
+            cellWidth = cellWidth,
+            context = context
         )
     }
 
@@ -144,7 +135,7 @@ class CalendarItemView @JvmOverloads constructor(
 
     private var weekCalendarHeight: Int = 0
 
-    private var monthState = MonthItem.State(
+    private val monthState = MonthItem.State(
         id = "month_id",
         daysOfWeekDelegateView = daysOfWeekDelegateView,
         monthDelegateView = calendarMonthDelegateView
@@ -177,6 +168,8 @@ class CalendarItemView @JvmOverloads constructor(
 
         setWeekAdapter()
         buildWeekList()
+
+        setCalendarHeight(isMonth)
     }
 
     private fun setWeekAdapter() = with(binding.calendarItemWeek) {
@@ -187,76 +180,123 @@ class CalendarItemView @JvmOverloads constructor(
     }
 
     private fun buildWeekList() {
-        weekList = buildList<WeekItem.State>(COUNT_WEEK) {
-            val startDayOfMonth = date.startDayOfMonth().startOfTheDay()
-            val startDayOfMonthDayOfWeek = startDayOfMonth.dayOfWeek.value
-            val numberOfDaysBeforeMonth = startDayOfMonthDayOfWeek - 1
-            var startDayOfWeek = startDayOfMonth.minusDays(numberOfDaysBeforeMonth)
-
-            repeat(COUNT_WEEK) { count ->
-                val weekViewDelegate: CalendarWeekDelegateView = CalendarWeekDelegateViewImpl(
-                    params = calendarParams,
-                    provider = this@CalendarItemView
-                )
-
-                weekViewDelegate.update(
-                    startDayOfWeek = startDayOfWeek,
-                    month = date.month,
-                    focus = focus,
-                    count = count
-                )
-
-                if (startDayOfWeek == focus) {
-                    lastCountWeekFocus = count
-                }
-
-                weekCalendarHeight =
-                    daysOfWeekDelegateView.getHeight() + indentDayOfWeekToDayOfMonth + weekViewDelegate.getHeight()
-
-                WeekItem.State(
-                    id = count.toString(),
-                    width = calendarWidth,
-                    height = weekCalendarHeight,
-                    startDayOfWeek = startDayOfWeek,
-                    calendarDaysOfWeekDelegateView = daysOfWeekDelegateView,
-                    calendarWeekDelegateView = weekViewDelegate,
-                ).let(::add)
-
-                startDayOfWeek = startDayOfWeek.plusWeek(1)
-            }
-        }
-
+        val weekBuilder = calendarItemMapper.mapWeekList(
+            width = calendarWidth,
+            date = date,
+            focus = focus,
+            heightWithoutWeek = daysOfWeekDelegateView.getHeight() + indentDayOfWeekToDayOfMonth,
+            calendarParams = calendarParams,
+            daysOfWeekDelegateView = daysOfWeekDelegateView,
+            provider = this,
+        )
+        lastCountWeekFocus = weekBuilder.lastCountWeekFocus
+        weekCalendarHeight = weekBuilder.height
+        weekList = weekBuilder.weekList
         weekAdapter.submitList(weekList)
     }
 
     override fun bindState(state: CalendarItem.State) {
-        this.date = state.month
-        this.focus = state.focus
-
-        binding.calendarItemMonth.isVisible = state.isMonth
-        binding.calendarItemWeek.isVisible = !state.isMonth
+        this.state = state
+        if (state.isAnimate) {
+            setAnimateCalendarHeight(state.isMonth)
+        } else {
+            setCalendarHeight(state.isMonth)
+            updateMonth(focus)
+            buildWeekList()
+        }
     }
 
-    override fun onClickFocus(
-        focus: LocalDateFormatter,
-        type: CalendarType,
-        count: Int
+    private fun setCalendarHeight(
+        isMonth: Boolean
     ) {
-        this.focus = focus
-        val lastItem = lastCountWeekFocus?.let { lastCount ->
-            val item = weekList[lastCount]
-            item.calendarWeekDelegateView.update(
-                startDayOfWeek = item.startDayOfWeek,
-                focus = focus,
-                month = date.month,
-                count = lastCount
-            )
-            item
+        binding.calendarItemMonth.isVisible = isMonth
+        binding.calendarItemWeek.isVisible = !isMonth
+
+        if (isMonth) {
+            binding.calendarItemMonth.animate().alpha(1f)
+            binding.calendarItemWeek.alpha = 0f
+        } else {
+            binding.calendarItemWeek.animate().alpha(1f)
+            binding.calendarItemMonth.alpha = 0f
         }
 
-        val newItem = weekList[count]
-        newItem.calendarWeekDelegateView.update(
-            startDayOfWeek = newItem.startDayOfWeek,
+        binding.calendarItemContainer.layoutParams = LayoutParams(
+            calendarWidth,
+            getCurrentHeight()
+        )
+        binding.calendarItemContainer.requestLayout()
+    }
+
+    private fun setAnimateCalendarHeight(isMonth: Boolean) {
+        val startHeight = getStartAnimateHeightCalendar()
+        val endHeight = getEndAnimateHeightCalendar()
+        calendarHeightAnimator = ValueAnimator.ofInt(startHeight, endHeight).apply {
+            duration = 200
+            doOnStart {
+                if (isMonth) {
+                    binding.calendarItemWeek.animate().alpha(0f)
+                    binding.calendarItemWeek.isVisible = false
+                } else {
+                    binding.calendarItemMonth.isVisible = false
+                    binding.calendarItemMonth.animate().alpha(0f)
+                }
+            }
+            doOnEnd {
+                if (isMonth) {
+                    binding.calendarItemMonth.isVisible = true
+                    binding.calendarItemMonth.animate().alpha(1f)
+                } else {
+                    binding.calendarItemWeek.animate().alpha(1f)
+                    binding.calendarItemWeek.isVisible = true
+                }
+                state?.isAnimate = false
+                calendarHeightAnimator = null
+            }
+            addUpdateListener { animation ->
+                binding.calendarItemContainer.layoutParams.height = animation.animatedValue as Int
+                binding.calendarItemContainer.requestLayout()
+            }
+            start()
+        }
+    }
+
+    private fun getStartAnimateHeightCalendar(): Int {
+        return if (isMonth) {
+            weekCalendarHeight
+        } else {
+            monthCalendarHeight
+        } + containerPaddingBottom
+    }
+
+    private fun getEndAnimateHeightCalendar(): Int {
+        return if (isMonth) {
+            monthCalendarHeight
+        } else {
+            weekCalendarHeight
+        } + containerPaddingBottom
+    }
+
+    private fun getCurrentHeight(): Int {
+        return if (isMonth) {
+            monthCalendarHeight
+        } else {
+            weekCalendarHeight
+        } + containerPaddingBottom
+    }
+
+    private fun updateWeekList(
+        count: Int,
+        focus: LocalDateFormatter,
+    ) {
+        val lastItem = calendarItemMapper.mapWeekItemByCount(
+            weekList = weekList,
+            focus = focus,
+            month = date.month,
+            count = lastCountWeekFocus
+        )
+
+        val newItem = calendarItemMapper.mapWeekItemByCount(
+            weekList = weekList,
             focus = focus,
             month = date.month,
             count = count
@@ -264,14 +304,42 @@ class CalendarItemView @JvmOverloads constructor(
 
         weekList = weekList.toMutableList().apply {
             lastItem?.let { set(lastCountWeekFocus ?: 0, lastItem) }
-            set(count, newItem)
+            newItem?.let { set(count, it) }
         }
 
         weekAdapter.submitList(weekList)
-        this.lastCountWeekFocus = count
     }
 
-    private companion object {
-        const val COUNT_WEEK = 6
+    private fun updateMonth(focus: LocalDateFormatter?) {
+        calendarMonthDelegateView.update(
+            date = date,
+            focus = focus
+        )
+        binding.calendarItemMonth.bindState(monthState)
+    }
+
+    override fun onClickFocus(
+        focus: LocalDateFormatter,
+        type: CalendarType,
+        count: Int
+    ) {
+        this.state?.focus = focus
+
+        updateWeekList(
+            count = count,
+            focus = focus
+        )
+
+        updateMonth(focus)
+
+        if (state?.isMonth == true) {
+            binding.calendarItemWeek.post {
+                binding.calendarItemWeek.scrollToPosition(count)
+            }
+        }
+
+        this.lastCountWeekFocus = count
+
+        state?.onClickFocus?.invoke(focus)
     }
 }

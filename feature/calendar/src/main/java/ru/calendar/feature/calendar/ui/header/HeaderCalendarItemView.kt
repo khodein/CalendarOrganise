@@ -26,24 +26,6 @@ class HeaderCalendarItemView @JvmOverloads constructor(
     private val binding = ViewHeaderCalendarBinding.inflate(LayoutInflater.from(context), this)
     private var state: HeaderCalendarItem.State? = null
 
-    private val excludedState = ButtonIconItem.State(
-        id = "headerCalendarExcluded",
-        iconValue = ImageValue(value = resR.drawable.ic_excluded),
-        onClick = state?.onClickExcluded
-    )
-
-    private val addedState = ButtonIconItem.State(
-        id = "headerCalendarAdded",
-        iconValue = ImageValue(value = resR.drawable.ic_plus),
-        paddings = DimensionRect(
-            left = 8,
-            right = 0,
-            top = 0,
-            bottom = 0
-        ),
-        onClick = state?.onClickAdded
-    )
-
     init {
         layoutParams = LayoutParams(
             MATCH_PARENT,
@@ -56,8 +38,26 @@ class HeaderCalendarItemView @JvmOverloads constructor(
 
     override fun bindState(state: HeaderCalendarItem.State) {
         this.state = state
-        binding.headerCalendarAdded.bindState(addedState)
-        binding.headerCalendarExcluded.bindState(excludedState)
+        binding.headerCalendarAdded.bindState(
+            ButtonIconItem.State(
+                id = "headerCalendarAdded",
+                iconValue = ImageValue(value = resR.drawable.ic_plus),
+                paddings = DimensionRect(
+                    left = 8,
+                    right = 0,
+                    top = 0,
+                    bottom = 0
+                ),
+                onClick = state.onClickAdded
+            )
+        )
+        binding.headerCalendarExcluded.bindState(
+            ButtonIconItem.State(
+                id = "headerCalendarExcluded",
+                iconValue = ImageValue(value = resR.drawable.ic_excluded),
+                onClick = state.onClickExcluded
+            )
+        )
         binding.headerCalendarMonth.text = state.monthCalendar
     }
 }

@@ -10,7 +10,7 @@ import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
 import ru.calendar.core.tools.ext.dp
 import ru.calendar.core.tools.formatter.LocalDateFormatter
-import ru.calendar.feature.calendar.ui.calendar.CalendarParams
+import ru.calendar.feature.calendar.ui.calendar.delegates.params.CalendarParams
 import ru.calendar.feature.calendar.ui.calendar.day.Day
 
 abstract class BaseCalendarDelegateView(
