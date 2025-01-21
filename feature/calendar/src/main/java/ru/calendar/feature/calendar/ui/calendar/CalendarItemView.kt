@@ -52,9 +52,12 @@ class CalendarItemView @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs, defStyleAttr), CalendarItem.View, CalendarProvider {
 
     private val binding = ViewCalendarItemBinding.inflate(LayoutInflater.from(context), this)
+
     private var state: CalendarItem.State? = null
 
-    private val calendarItemMapper: CalendarItemMapper = CalendarItemMapperImpl
+    private var calendarHeightAnimator: Animator? = null
+
+    private val calendarItemMapper: CalendarItemMapper by lazy { CalendarItemMapperImpl }
 
     private val calendarWidth: Int by lazy { screenWidth }
 
@@ -63,26 +66,24 @@ class CalendarItemView @JvmOverloads constructor(
 
     private val focus: LocalDateFormatter?
         get() = state?.focus
-
-    private var calendarHeightAnimator: Animator? = null
-
-    @ColorInt
-    private val backgroundColorInt = ColorValue.white.getColor(context)
-
-    private val stepWidth = DimensionValue.Dp(30).value.toFloat()
-    private val stepHeight = DimensionValue.Dp(12).value.toFloat()
-
-    private val cellWidth = DimensionValue.Dp(24).value.toFloat()
-    private val cellHeight = DimensionValue.Dp(24).value.toFloat()
-
-    private val indentDayOfWeekToDayOfMonth = DimensionValue.Dp(14).value
-
-    private val containerPaddingBottom = DimensionValue.Dp(20).value
-    private val containerRadius = DimensionValue.Dp(20)
-
-    private val weekAdapter = RecyclerAdapter()
-    private var weekList: List<WeekItem.State> = emptyList()
     private var lastCountWeekFocus: Int? = null
+
+    @get:ColorInt
+    private val backgroundColorInt by lazy { ColorValue.white.getColor(context) }
+
+    private val stepWidth by lazy { DimensionValue.Dp(30).value.toFloat() }
+    private val stepHeight by lazy { DimensionValue.Dp(12).value.toFloat() }
+
+    private val cellWidth by lazy { DimensionValue.Dp(24).value.toFloat() }
+    private val cellHeight by lazy { DimensionValue.Dp(24).value.toFloat() }
+
+    private val indentDayOfWeekToDayOfMonth by lazy { DimensionValue.Dp(14).value }
+
+    private val containerPaddingBottom by lazy { DimensionValue.Dp(20).value }
+    private val containerRadius by lazy { DimensionValue.Dp(20) }
+
+    private val weekAdapter by lazy { RecyclerAdapter() }
+    private var weekList: List<WeekItem.State> = emptyList()
 
     private val isMonth: Boolean
         get() = state?.isMonth ?: true
@@ -135,11 +136,13 @@ class CalendarItemView @JvmOverloads constructor(
 
     private var weekCalendarHeight: Int = 0
 
-    private val monthState = MonthItem.State(
-        id = "month_id",
-        daysOfWeekDelegateView = daysOfWeekDelegateView,
-        monthDelegateView = calendarMonthDelegateView
-    )
+    private val monthState by lazy {
+        MonthItem.State(
+            id = "month_id",
+            daysOfWeekDelegateView = daysOfWeekDelegateView,
+            monthDelegateView = calendarMonthDelegateView
+        )
+    }
 
     init {
         layoutParams = LayoutParams(
