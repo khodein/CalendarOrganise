@@ -16,6 +16,10 @@ class TextItemView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : AppCompatTextView(context, attrs, defStyleAttr), RecyclerItemView<TextItem.State> {
 
+    init {
+        includeFontPadding = false
+    }
+
     override fun bindState(state: TextItem.State) {
         load(state.value)
         setSizeValue(state.sizeValue)

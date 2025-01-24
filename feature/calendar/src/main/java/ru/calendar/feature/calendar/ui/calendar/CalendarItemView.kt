@@ -57,7 +57,7 @@ class CalendarItemView @JvmOverloads constructor(
 
     private var calendarHeightAnimator: Animator? = null
 
-    private val calendarItemMapper: CalendarItemMapper by lazy { CalendarItemMapperImpl }
+    private val calendarItemMapper: CalendarItemMapper by lazy { CalendarItemMapperImpl() }
 
     private val calendarWidth: Int by lazy { screenWidth }
 
@@ -150,8 +150,9 @@ class CalendarItemView @JvmOverloads constructor(
             WRAP_CONTENT
         )
 
+        setBackgroundColor(backgroundColorInt)
+
         binding.calendarItemContainer.run {
-            setBackgroundColor(backgroundColorInt)
             applyPadding(bottom = containerPaddingBottom)
             makeRound(
                 RoundValue(

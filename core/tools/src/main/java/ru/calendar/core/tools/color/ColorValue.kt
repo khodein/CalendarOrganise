@@ -21,6 +21,9 @@ sealed interface ColorValue {
         val secondaryText: ColorValue
             get() = Res(R.color.secondaryText)
 
+        val secondary: ColorValue
+            get() = Res(R.color.secondary)
+
         val white: ColorValue
             get() = Res(R.color.white)
 

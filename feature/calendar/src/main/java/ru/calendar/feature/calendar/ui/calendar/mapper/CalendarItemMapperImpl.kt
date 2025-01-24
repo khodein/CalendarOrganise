@@ -14,9 +14,10 @@ import ru.calendar.feature.calendar.ui.calendar.delegates.params.CalendarDaysOfW
 import ru.calendar.feature.calendar.ui.calendar.delegates.params.CalendarParams
 import ru.calendar.feature.calendar.ui.calendar.delegates.week.CalendarWeekDelegateView
 import ru.calendar.feature.calendar.ui.calendar.delegates.week.CalendarWeekDelegateViewImpl
+import ru.calendar.feature.calendar.ui.calendar.model.WeekBuilderModel
 import ru.calendar.feature.calendar.ui.calendar.week.WeekItem
 
-object CalendarItemMapperImpl : CalendarItemMapper {
+class CalendarItemMapperImpl : CalendarItemMapper {
 
     override fun mapDayOfWeekParams(
         width: Int,
@@ -106,8 +107,6 @@ object CalendarItemMapperImpl : CalendarItemMapper {
         }
     }
 
-    private const val COUNT_WEEK = 6
-
     override fun mapWeekList(
         width: Int,
         heightWithoutWeek: Int,
@@ -116,7 +115,7 @@ object CalendarItemMapperImpl : CalendarItemMapper {
         focus: LocalDateFormatter?,
         daysOfWeekDelegateView: CalendarDaysOfWeekDelegateView,
         provider: CalendarProvider
-    ): WeekBuilder {
+    ): WeekBuilderModel {
         var lastCountWeekFocus: Int = 0
         var weekCalendarHeight: Int = 0
 
@@ -162,10 +161,14 @@ object CalendarItemMapperImpl : CalendarItemMapper {
             }
         }
 
-        return WeekBuilder(
+        return WeekBuilderModel(
             weekList = weekList,
             lastCountWeekFocus = lastCountWeekFocus,
             height = weekCalendarHeight
         )
+    }
+
+    companion object {
+        private const val COUNT_WEEK = 6
     }
 }

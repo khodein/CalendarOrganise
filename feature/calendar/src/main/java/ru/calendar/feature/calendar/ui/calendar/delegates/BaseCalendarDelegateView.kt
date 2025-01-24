@@ -6,12 +6,12 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.text.TextPaint
 import android.view.MotionEvent
+import androidx.annotation.ColorInt
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
 import ru.calendar.core.tools.ext.dp
 import ru.calendar.core.tools.formatter.LocalDateFormatter
 import ru.calendar.feature.calendar.ui.calendar.delegates.params.CalendarParams
-import ru.calendar.feature.calendar.ui.calendar.day.Day
 
 abstract class BaseCalendarDelegateView(
     private val provider: CalendarProvider,
@@ -226,5 +226,25 @@ abstract class BaseCalendarDelegateView(
 
             canvas.drawText(day.text, day.x, day.y, textPaint)
         }
+    }
+
+    data class Day(
+        val count: Int,
+        val x: Float,
+        val y: Float,
+        val text: String,
+        val date: LocalDateFormatter,
+        val isFocus: Boolean,
+        val isToday: Boolean,
+        val coordinate: Coordinate,
+        @ColorInt val textColorInt: Int,
+        @ColorInt val backgroundColorInt: Int
+    ) {
+        data class Coordinate(
+            val top: Float,
+            val bottom: Float,
+            val left: Float,
+            val right: Float,
+        )
     }
 }

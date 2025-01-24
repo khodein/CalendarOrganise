@@ -35,7 +35,9 @@ class CalendarViewModel(
             date.month.name.replaceFirstChar {
                 if (it.isLowerCase()) it.titlecase(
                     Locale.ROOT
-                ) else it.toString()
+                ) else {
+                    it.toString()
+                }
             }
         } ${date.year}"
 
