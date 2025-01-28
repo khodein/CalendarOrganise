@@ -4,7 +4,7 @@ import android.graphics.Typeface
 import androidx.annotation.ColorInt
 import ru.calendar.core.tools.formatter.LocalDateFormatter
 
-class CalendarParams(
+data class CalendarParams(
     val width: Int,
     val today: LocalDateFormatter,
     val startY: Int,

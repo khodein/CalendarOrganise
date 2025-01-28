@@ -14,7 +14,6 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.PagerSnapHelper
 import ru.calendar.core.recycler.adapter.RecyclerAdapter
 import ru.calendar.core.tools.color.ColorValue
-import ru.calendar.core.tools.dimension.DimensionValue
 import ru.calendar.core.tools.ext.applyPadding
 import ru.calendar.core.tools.ext.getColor
 import ru.calendar.core.tools.ext.makeRound
@@ -55,22 +54,13 @@ class CalendarItemView @JvmOverloads constructor(
         get() = screenWidth
 
     private val date: LocalDateFormatter
-        get() = state?.date ?: LocalDateFormatter.nowInSystemDefault()
+        get() = state?.date ?: LocalDateFormatter.nowInSystemDefault().startOfTheDay()
 
     private val focus: LocalDateFormatter?
         get() = state?.focus
     private var lastCountWeekFocus: Int? = null
 
-    private val stepWidth by lazy { DimensionValue.Dp(30).value.toFloat() }
-    private val stepHeight by lazy { DimensionValue.Dp(12).value.toFloat() }
-
-    private val cellWidth by lazy { DimensionValue.Dp(24).value.toFloat() }
-    private val cellHeight by lazy { DimensionValue.Dp(24).value.toFloat() }
-
-    private val indentDayOfWeekToDayOfMonth by lazy { DimensionValue.Dp(14).value }
-
-    private val containerPaddingBottom by lazy { DimensionValue.Dp(20).value }
-    private val containerRadius by lazy { DimensionValue.Dp(20) }
+    private val defaultParams by lazy { calendarItemMapper.mapDefaultParams() }
 
     private val weekAdapter by lazy { RecyclerAdapter() }
     private var weekList: List<WeekItem.State> = emptyList()
@@ -78,26 +68,28 @@ class CalendarItemView @JvmOverloads constructor(
     private val isMonth: Boolean
         get() = state?.isMonth ?: true
 
-    private val daysOfWeekParams: CalendarDaysOfWeekParams
-        get() = calendarItemMapper.mapDayOfWeekParams(
+    private val daysOfWeekParams: CalendarDaysOfWeekParams by lazy {
+        calendarItemMapper.mapDayOfWeekParams(
             width = calendarWidth,
-            stepWidth = stepWidth,
-            cellWidth = cellWidth,
+            stepWidth = defaultParams.stepWidth,
+            cellWidth = defaultParams.cellWidth,
         )
+    }
 
     private val daysOfWeekDelegateView: CalendarDaysOfWeekDelegateView by lazy {
         CalendarDaysOfWeekDelegateViewImpl()
     }
 
-    private val calendarParams: CalendarParams
-        get() = calendarItemMapper.mapCalendarParams(
+    private val calendarParams: CalendarParams by lazy {
+        calendarItemMapper.mapCalendarParams(
             width = calendarWidth,
-            startY = daysOfWeekDelegateView.getHeight() + indentDayOfWeekToDayOfMonth,
-            stepWidth = stepWidth,
-            stepHeight = stepHeight,
-            cellHeight = cellHeight,
-            cellWidth = cellWidth,
+            startY = daysOfWeekDelegateView.getHeight() + defaultParams.indentDayOfWeekToDayOfMonth,
+            stepWidth = defaultParams.stepWidth,
+            stepHeight = defaultParams.stepHeight,
+            cellHeight = defaultParams.cellHeight,
+            cellWidth = defaultParams.cellWidth,
         )
+    }
 
     private val calendarMonthDelegateView: CalendarMonthDelegateView by lazy {
         CalendarMonthDelegateViewImpl(provider = this)
@@ -106,7 +98,7 @@ class CalendarItemView @JvmOverloads constructor(
     private val monthCalendarHeight: Int
         get() {
             return daysOfWeekDelegateView.getHeight() +
-                    indentDayOfWeekToDayOfMonth +
+                    defaultParams.indentDayOfWeekToDayOfMonth +
                     calendarMonthDelegateView.getHeight()
         }
 
@@ -141,8 +133,8 @@ class CalendarItemView @JvmOverloads constructor(
             width = calendarWidth,
             date = date,
             focus = focus,
-            heightWithoutWeek = daysOfWeekDelegateView.getHeight() + indentDayOfWeekToDayOfMonth,
-            calendarParams = calendarParams,
+            heightWithoutWeek = daysOfWeekDelegateView.getHeight() + defaultParams.indentDayOfWeekToDayOfMonth,
+            calendarParams = calendarParams.copy(width = calendarWidth),
             daysOfWeekDelegateView = daysOfWeekDelegateView,
             provider = this,
         )
@@ -172,11 +164,11 @@ class CalendarItemView @JvmOverloads constructor(
 
     private fun setCalendarHeight() {
         binding.calendarItemContainer.run {
-            applyPadding(bottom = containerPaddingBottom)
+            applyPadding(bottom = defaultParams.containerPaddingBottom)
             makeRound(
                 RoundValue(
                     mode = RoundModeEntity.BOTTOM,
-                    radius = containerRadius
+                    radius = defaultParams.containerRadius
                 )
             )
         }
@@ -240,7 +232,7 @@ class CalendarItemView @JvmOverloads constructor(
         calendarMonthDelegateView.update(
             date = date,
             focus = focus,
-            params = calendarParams
+            params = calendarParams.copy(width = calendarWidth)
         )
 
         binding.calendarItemMonth.setSize(
@@ -258,7 +250,7 @@ class CalendarItemView @JvmOverloads constructor(
     }
 
     private fun updateDaysOfWeek() {
-        daysOfWeekDelegateView.update(daysOfWeekParams)
+        daysOfWeekDelegateView.update(daysOfWeekParams.copy(width = calendarWidth))
     }
 
     override fun onClickFocus(
@@ -275,7 +267,7 @@ class CalendarItemView @JvmOverloads constructor(
             focus = focus,
             month = date.month,
             count = lastCountWeekFocus,
-            calendarParams = calendarParams,
+            calendarParams = calendarParams.copy(width = calendarWidth),
         )
 
         val newItem = calendarItemMapper.mapWeekItemByCount(
@@ -283,7 +275,7 @@ class CalendarItemView @JvmOverloads constructor(
             focus = focus,
             month = date.month,
             count = count,
-            calendarParams = calendarParams,
+            calendarParams = calendarParams.copy(width = calendarWidth),
         )
 
         weekList = weekList.toMutableList().apply {
@@ -313,7 +305,7 @@ class CalendarItemView @JvmOverloads constructor(
             weekCalendarHeight
         } else {
             monthCalendarHeight
-        } + containerPaddingBottom
+        } + defaultParams.containerPaddingBottom
     }
 
     private fun getEndAnimateHeightCalendar(): Int {
@@ -321,7 +313,7 @@ class CalendarItemView @JvmOverloads constructor(
             monthCalendarHeight
         } else {
             weekCalendarHeight
-        } + containerPaddingBottom
+        } + defaultParams.containerPaddingBottom
     }
 
     private fun getCurrentHeight(): Int {
@@ -329,6 +321,6 @@ class CalendarItemView @JvmOverloads constructor(
             monthCalendarHeight
         } else {
             weekCalendarHeight
-        } + containerPaddingBottom
+        } + defaultParams.containerPaddingBottom
     }
 }

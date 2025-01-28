@@ -11,6 +11,7 @@ import ru.calendar.core.tools.text.FontValue
 import ru.calendar.feature.calendar.ui.calendar.delegates.CalendarProvider
 import ru.calendar.feature.calendar.ui.calendar.delegates.daysOfWeek.CalendarDaysOfWeekDelegateView
 import ru.calendar.feature.calendar.ui.calendar.delegates.params.CalendarDaysOfWeekParams
+import ru.calendar.feature.calendar.ui.calendar.delegates.params.CalendarDefaultParams
 import ru.calendar.feature.calendar.ui.calendar.delegates.params.CalendarParams
 import ru.calendar.feature.calendar.ui.calendar.delegates.week.CalendarWeekDelegateView
 import ru.calendar.feature.calendar.ui.calendar.delegates.week.CalendarWeekDelegateViewImpl
@@ -168,6 +169,18 @@ class CalendarItemMapperImpl(
             weekList = weekList,
             lastCountWeekFocus = lastCountWeekFocus,
             height = weekCalendarHeight
+        )
+    }
+
+    override fun mapDefaultParams(): CalendarDefaultParams {
+        return CalendarDefaultParams(
+            stepWidth = DimensionValue.Dp(30).value.toFloat(),
+            stepHeight = DimensionValue.Dp(12).value.toFloat(),
+            cellWidth = DimensionValue.Dp(24).value.toFloat(),
+            cellHeight = DimensionValue.Dp(24).value.toFloat(),
+            indentDayOfWeekToDayOfMonth = DimensionValue.Dp(14).value,
+            containerPaddingBottom = DimensionValue.Dp(20).value,
+            containerRadius = DimensionValue.Dp(20)
         )
     }
 
