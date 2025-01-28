@@ -121,19 +121,6 @@ class CalendarItemView @JvmOverloads constructor(
         setWeekAdapter()
 
         setBackgroundColor(ColorValue.white.getColor(context))
-
-        binding.calendarItemContainer.run {
-            applyPadding(bottom = containerPaddingBottom)
-            makeRound(
-                RoundValue(
-                    mode = RoundModeEntity.BOTTOM,
-                    radius = containerRadius
-                )
-            )
-        }
-
-        buildCalendar()
-        setCalendarHeight()
     }
 
     private fun buildCalendar() {
@@ -184,6 +171,16 @@ class CalendarItemView @JvmOverloads constructor(
     }
 
     private fun setCalendarHeight() {
+        binding.calendarItemContainer.run {
+            applyPadding(bottom = containerPaddingBottom)
+            makeRound(
+                RoundValue(
+                    mode = RoundModeEntity.BOTTOM,
+                    radius = containerRadius
+                )
+            )
+        }
+
         binding.calendarItemMonth.isVisible = isMonth
         binding.calendarItemWeek.isVisible = !isMonth
 
