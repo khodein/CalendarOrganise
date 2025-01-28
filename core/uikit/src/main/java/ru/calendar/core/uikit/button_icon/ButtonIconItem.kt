@@ -17,7 +17,7 @@ class ButtonIconItem {
         val onClick: (() -> Unit)? = null,
     ): RecyclerState {
         override val provideId: String = id
-        override val viewType: Int = ButtonIconItem::class.java.hashCode()
+        override val viewType: Int = id.hashCode()
         override fun getView(context: Context) = ButtonIconView(context)
     }
 }

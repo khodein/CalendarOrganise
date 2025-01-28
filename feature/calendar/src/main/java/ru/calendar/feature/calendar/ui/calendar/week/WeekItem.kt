@@ -22,7 +22,7 @@ class WeekItem {
         val calendarWeekDelegateView: CalendarWeekDelegateView,
     ): RecyclerState {
         override val provideId: String = id
-        override val viewType: Int = WeekItem::class.hashCode()
+        override val viewType: Int = id.hashCode()
         override fun getView(context: Context) = WeekItemView(context)
     }
 }

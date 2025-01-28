@@ -14,7 +14,7 @@ class CalendarPopupMapperImpl : CalendarPopupMapper {
         val years = buildList<CalendarPathItem.State>(COUNT_YEARS) {
             repeat(COUNT_YEARS) { count ->
                 CalendarPathItem.State(
-                    id = "${year}${count}",
+                    id = "${count}",
                     text = year.toString(),
                     data = CalendarPathItem.Data.YearCondition(year),
                     isFocus = year == focus.year,

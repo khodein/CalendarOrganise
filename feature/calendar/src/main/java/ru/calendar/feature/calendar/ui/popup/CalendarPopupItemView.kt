@@ -37,7 +37,7 @@ class CalendarPopupItemView @JvmOverloads constructor(
     private val type: CalendarPopupItem.Type
         get() = state?.type ?: CalendarPopupItem.Type.MONTH_YEAR
 
-    private val focus: LocalDateFormatter = LocalDateFormatter.nowInSystemDefault()
+    private var focus: LocalDateFormatter = LocalDateFormatter.nowInSystemDefault()
 
     private val calendarPopupMapper: CalendarPopupMapper by lazy { CalendarPopupMapperImpl() }
 
@@ -53,7 +53,7 @@ class CalendarPopupItemView @JvmOverloads constructor(
             DimensionValue.MatchParent.value,
             DimensionValue.WrapContent.value
         )
-        maxHeight = DimensionValue.Dp(30).value * 5
+        maxHeight = DimensionValue.Dp(30 * 5).value
         setBackgroundView(ColorValue.white)
         elevation = 3f
         makeRound(
@@ -116,7 +116,7 @@ class CalendarPopupItemView @JvmOverloads constructor(
             is CalendarPathItem.Data.MonthCondition -> {
                 val month = data.month
                 val year = focus.year
-                val day = focus.dayOfYear
+                val day = focus.dayOfMonth
                 LocalDateTime(
                     year,
                     month,
@@ -130,7 +130,7 @@ class CalendarPopupItemView @JvmOverloads constructor(
 
             is CalendarPathItem.Data.YearCondition -> {
                 val month = focus.month
-                val day = focus.dayOfYear
+                val day = focus.dayOfMonth
                 val year = data.year
                 LocalDateTime(
                     year,
@@ -144,7 +144,8 @@ class CalendarPopupItemView @JvmOverloads constructor(
             }
         }
 
-        state?.date = LocalDateFormatter(localDateTime)
+        focus = LocalDateFormatter(localDateTime)
+        build()
     }
 
     private fun buildYearsList() {

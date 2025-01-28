@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 internal class BaseRecyclerAdapter {
 
-    private val holderViewTypeMap: ConcurrentHashMap<Int, HolderItemState> = ConcurrentHashMap()
+    private val holderViewTypeMap: HashMap<Int, HolderItemState> = hashMapOf()
 
     fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return getItemView(
@@ -35,6 +35,7 @@ internal class BaseRecyclerAdapter {
     }
 
     fun getItemViewType(
+        position: Int,
         item: HolderItemState,
     ): Int {
         holderViewTypeMap.getOrPut(item.viewType) { item }
@@ -44,5 +45,7 @@ internal class BaseRecyclerAdapter {
     private fun getItemView(
         viewType: Int,
         context: Context,
-    ): View? = holderViewTypeMap[viewType]?.getView(context)
+    ): View? {
+        return holderViewTypeMap[viewType]?.getView(context)
+    }
 }

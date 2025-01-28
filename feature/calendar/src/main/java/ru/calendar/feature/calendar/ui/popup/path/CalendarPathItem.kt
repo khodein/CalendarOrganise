@@ -20,7 +20,7 @@ class CalendarPathItem {
         val onClick: ((data: Data) -> Unit)? = null,
     ): RecyclerState {
         override val provideId: String = id
-        override val viewType: Int = CalendarPathItem::class.hashCode()
+        override val viewType: Int = id.hashCode()
         override fun getView(context: Context) = CalendarPathItemView(context)
     }
 

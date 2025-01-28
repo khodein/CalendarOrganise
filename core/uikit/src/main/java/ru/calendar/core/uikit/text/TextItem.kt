@@ -18,7 +18,7 @@ class TextItem {
         val background: ColorValue? = null,
     ) : RecyclerState {
         override val provideId: String = id
-        override val viewType: Int = TextItem::class.java.hashCode()
+        override val viewType: Int = id.hashCode()
         override fun getView(context: Context) = TextItemView(context)
     }
 }
