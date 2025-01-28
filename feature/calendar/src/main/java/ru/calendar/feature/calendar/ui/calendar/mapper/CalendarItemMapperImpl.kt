@@ -17,13 +17,14 @@ import ru.calendar.feature.calendar.ui.calendar.delegates.week.CalendarWeekDeleg
 import ru.calendar.feature.calendar.ui.calendar.model.WeekBuilderModel
 import ru.calendar.feature.calendar.ui.calendar.week.WeekItem
 
-class CalendarItemMapperImpl : CalendarItemMapper {
+class CalendarItemMapperImpl(
+    private val context: Context,
+) : CalendarItemMapper {
 
     override fun mapDayOfWeekParams(
         width: Int,
         stepWidth: Float,
-        cellWidth: Float,
-        context: Context,
+        cellWidth: Float
     ): CalendarDaysOfWeekParams {
         return CalendarDaysOfWeekParams(
             width = width,
@@ -44,7 +45,6 @@ class CalendarItemMapperImpl : CalendarItemMapper {
         stepHeight: Float,
         cellWidth: Float,
         cellHeight: Float,
-        context: Context,
     ): CalendarParams {
         val text = CalendarParams.Text(
             textSize = DimensionValue.SpToPx(14f).value.toFloat(),
@@ -93,17 +93,20 @@ class CalendarItemMapperImpl : CalendarItemMapper {
         weekList: List<WeekItem.State>,
         focus: LocalDateFormatter,
         month: Month,
-        count: Int?
+        count: Int?,
+        calendarParams: CalendarParams,
     ): WeekItem.State? {
         return count?.let {
-            val item = weekList[count]
-            item.calendarWeekDelegateView.update(
-                startDayOfWeek = item.startDayOfWeek,
-                focus = focus,
-                month = month,
-                count = count
-            )
-            item
+            weekList.getOrNull(count)?.let { item ->
+                item.calendarWeekDelegateView.update(
+                    startDayOfWeek = item.startDayOfWeek,
+                    focus = focus,
+                    month = month,
+                    count = count,
+                    params = calendarParams,
+                )
+                item
+            }
         }
     }
 
@@ -127,7 +130,6 @@ class CalendarItemMapperImpl : CalendarItemMapper {
 
             repeat(COUNT_WEEK) { count ->
                 val weekViewDelegate: CalendarWeekDelegateView = CalendarWeekDelegateViewImpl(
-                    params = calendarParams,
                     provider = provider
                 )
 
@@ -135,7 +137,8 @@ class CalendarItemMapperImpl : CalendarItemMapper {
                     startDayOfWeek = startDayOfWeek,
                     month = date.month,
                     focus = focus,
-                    count = count
+                    count = count,
+                    params = calendarParams,
                 )
 
                 if (startDayOfWeek == focus) {

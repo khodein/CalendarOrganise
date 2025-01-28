@@ -1,6 +1,5 @@
 package ru.calendar.feature.calendar.ui.calendar.mapper
 
-import android.content.Context
 import kotlinx.datetime.Month
 import ru.calendar.core.tools.formatter.LocalDateFormatter
 import ru.calendar.feature.calendar.ui.calendar.delegates.CalendarProvider
@@ -16,7 +15,6 @@ interface CalendarItemMapper {
         width: Int,
         stepWidth: Float,
         cellWidth: Float,
-        context: Context,
     ): CalendarDaysOfWeekParams
 
     fun mapCalendarParams(
@@ -26,14 +24,14 @@ interface CalendarItemMapper {
         stepHeight: Float,
         cellWidth: Float,
         cellHeight: Float,
-        context: Context,
     ): CalendarParams
 
     fun mapWeekItemByCount(
         weekList: List<WeekItem.State>,
         focus: LocalDateFormatter,
         month: Month,
-        count: Int?
+        count: Int?,
+        calendarParams: CalendarParams,
     ): WeekItem.State?
 
     fun mapWeekList(
