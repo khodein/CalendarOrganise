@@ -1,6 +1,5 @@
 package ru.calendar.feature.calendar.ui.popup.path
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.Gravity
@@ -8,8 +7,6 @@ import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
-import androidx.constraintlayout.widget.ConstraintLayout
-import kotlinx.datetime.Month
 import ru.calendar.core.recycler.RecyclerItemView
 import ru.calendar.core.tools.color.ColorValue
 import ru.calendar.core.tools.dimension.DimensionRect
@@ -32,11 +29,12 @@ class CalendarPathItemView @JvmOverloads constructor(
 
     private var textItemView: TextItemView? = null
     private var state: CalendarPathItem.State? = null
+    private val defaultHeight by lazy { DimensionValue.Dp(30).value }
 
     init {
         layoutParams = LayoutParams(
             MATCH_PARENT,
-            DimensionValue.Dp(30).value
+            defaultHeight
         )
 
         applyPadding(
@@ -73,6 +71,7 @@ class CalendarPathItemView @JvmOverloads constructor(
         if (textItemView == null) {
             addView(textView)
         }
+
         textItemView = textView
     }
 
