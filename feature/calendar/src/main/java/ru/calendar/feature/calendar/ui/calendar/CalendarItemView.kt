@@ -14,6 +14,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.PagerSnapHelper
 import ru.calendar.core.recycler.adapter.RecyclerAdapter
 import ru.calendar.core.tools.color.ColorValue
+import ru.calendar.core.tools.dimension.DimensionValue
 import ru.calendar.core.tools.ext.applyPadding
 import ru.calendar.core.tools.ext.getColor
 import ru.calendar.core.tools.ext.makeRound
@@ -113,6 +114,13 @@ class CalendarItemView @JvmOverloads constructor(
         setWeekAdapter()
 
         setBackgroundColor(ColorValue.white.getColor(context))
+
+        makeRound(
+            RoundValue(
+                mode = RoundModeEntity.BOTTOM,
+                radius = DimensionValue.Dp(16)
+            )
+        )
     }
 
     private fun buildCalendar() {
