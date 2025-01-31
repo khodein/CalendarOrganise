@@ -41,7 +41,7 @@ class CalendarDelegateMapperImpl : CalendarDelegateMapper {
         val left = x - pathCellHeight - paddingLeftAndRight
         val top = y - pathCellHeight - paddingTopAndBottom
         val right = x + pathCellHeight + paddingLeftAndRight
-        val bottom = y + paddingTopAndBottom
+        val bottom = y + paddingTopAndBottom + 2.dp
 
         val todayRectF = RectF(
             left,
@@ -57,7 +57,7 @@ class CalendarDelegateMapperImpl : CalendarDelegateMapper {
 
         val focus = CalendarDay.Focus(
             x = x,
-            y = y - cellHeight / 4f,
+            y = y - cellHeight / 5f,
             isVisible = isFocus
         )
 

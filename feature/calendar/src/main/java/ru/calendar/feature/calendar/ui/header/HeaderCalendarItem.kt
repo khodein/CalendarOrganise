@@ -9,6 +9,7 @@ class HeaderCalendarItem {
     data class State(
         val id: String,
         val monthCalendar: String,
+        val onClickTitle: (() -> Unit)? = null,
         val onClickAdded: (() -> Unit)? = null,
         val onClickExcluded: (() -> Unit)? = null
     )

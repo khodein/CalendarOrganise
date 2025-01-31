@@ -5,15 +5,15 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import ru.calendar.core.tools.color.ColorValue
 import ru.calendar.core.tools.dimension.DimensionRect
+import ru.calendar.core.tools.dimension.DimensionValue
 import ru.calendar.core.tools.ext.applyPadding
+import ru.calendar.core.tools.ext.makeRipple
 import ru.calendar.core.tools.ext.setBackgroundView
 import ru.calendar.core.tools.image.ImageValue
 import ru.calendar.core.uikit.button_icon.ButtonIconItem
-import ru.calendar.core.uikit.text.TextItem
 import ru.calendar.feature.calendar.databinding.ViewHeaderCalendarBinding
 import ru.calendar.core.res.R as resR
 
@@ -34,6 +34,15 @@ class HeaderCalendarItemView @JvmOverloads constructor(
 
         setBackgroundView(ColorValue.white)
         applyPadding(DimensionRect.R_24_20_24_20)
+
+        binding.headerCalendarMonth.makeRipple(
+            ripple = ColorValue.primary30,
+            cornerRadius = DimensionValue.Dp(6)
+        )
+
+        binding.headerCalendarMonth.setOnClickListener {
+            state?.onClickTitle?.invoke()
+        }
     }
 
     override fun bindState(state: HeaderCalendarItem.State) {
