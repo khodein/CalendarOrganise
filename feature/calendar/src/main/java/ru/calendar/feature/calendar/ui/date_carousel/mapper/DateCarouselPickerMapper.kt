@@ -8,4 +8,10 @@ interface DateCarouselPickerMapper {
     fun mapMonthList(focus: LocalDateFormatter): DatePickerBuilder
 
     fun mapYearList(focus: LocalDateFormatter): DatePickerBuilder
+
+    fun mapResult(
+        year: Int,
+        month: String,
+        default: LocalDateFormatter,
+    ): LocalDateFormatter
 }

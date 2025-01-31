@@ -37,6 +37,16 @@ class DateCarouselPickerItemView @JvmOverloads constructor(
 
     private var pick: DataPick? = null
 
+    private val result: LocalDateFormatter? by lazy {
+        pick?.let {
+            dateCarouselPickerMapper.mapResult(
+                year = it.year,
+                month = it.month,
+                default = defaultFocus
+            )
+        }
+    }
+
     private val onYearValueChangedListener by lazy {
         NumberPicker.OnValueChangeListener { _, _, new ->
             pick = DataPick(
@@ -126,9 +136,7 @@ class DateCarouselPickerItemView @JvmOverloads constructor(
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        pick?.let {
-            state?.onChangeDate?.invoke(it.year, it.month)
-        }
+        result?.let { state?.onChangeDate?.invoke(it) }
         binding.monthPicker.setOnValueChangedListener(null)
         binding.yearPicker.setOnValueChangedListener(null)
     }

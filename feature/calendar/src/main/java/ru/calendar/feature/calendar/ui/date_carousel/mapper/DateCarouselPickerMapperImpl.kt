@@ -1,5 +1,6 @@
 package ru.calendar.feature.calendar.ui.date_carousel.mapper
 
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.Month
 import ru.calendar.core.tools.formatter.LocalDateFormatter
 import ru.calendar.feature.calendar.ui.date_carousel.model.DatePickerBuilder
@@ -36,6 +37,23 @@ class DateCarouselPickerMapperImpl : DateCarouselPickerMapper {
             list = list.toTypedArray(),
             focusIndex = focusIndex,
         )
+    }
+
+    override fun mapResult(
+        year: Int,
+        month: String,
+        default: LocalDateFormatter,
+    ): LocalDateFormatter {
+        val newMonth = Month.entries.firstOrNull { it.name == month }
+        val localDateTime = LocalDateTime(
+            year = year,
+            month = newMonth ?: default.month,
+            dayOfMonth = 1,
+            hour = 0,
+            minute = 0,
+            second = 0,
+        )
+        return LocalDateFormatter(localDateTime)
     }
 
     private companion object {

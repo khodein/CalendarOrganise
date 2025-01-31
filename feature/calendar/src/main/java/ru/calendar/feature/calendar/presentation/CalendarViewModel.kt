@@ -4,8 +4,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.Month
 import ru.calendar.core.base.BaseViewModel
 import ru.calendar.core.tools.formatter.LocalDateFormatter
 import ru.calendar.feature.calendar.mapper.CalendarMapper
@@ -20,7 +18,9 @@ class CalendarViewModel(
     private val navigator: Navigator,
 ) : BaseViewModel(),
     CalendarMapper.HeaderMapperProvider,
-    CalendarMapper.ChangeDateAlertMapperProvider {
+    CalendarMapper.ChangeDateAlertMapperProvider,
+    CalendarMapper.CalendarProvider {
+
     private val _headerCalendarFlow = MutableStateFlow<HeaderCalendarItem.State?>(null)
     val headerCalendarFlow = _headerCalendarFlow.asStateFlow()
 
@@ -64,17 +64,13 @@ class CalendarViewModel(
         isMonth: Boolean = calendarFlow.value?.isMonth ?: true,
         isAnimate: Boolean = false,
     ) {
-        _calendarFlow.value = CalendarItem.State(
+        _calendarFlow.value = calendarMapper.mapCalendar(
             date = date,
             focus = focus,
             isAnimate = isAnimate,
             isMonth = isMonth,
-            onClickFocus = ::onClickFocus
+            provider = this,
         )
-    }
-
-    private fun onClickFocus(focus: LocalDateFormatter) {
-        this.focus = focus
     }
 
     override fun onClickHeaderAdded() {
@@ -97,16 +93,12 @@ class CalendarViewModel(
         _showAlertChangeDateFlow.tryEmit(state)
     }
 
-    override fun onClickDate(year: Int, month: String) {
-        val localDateTime = LocalDateTime(
-            year = year,
-            month = Month.entries.firstOrNull { it.name == month } ?: date.month,
-            dayOfMonth = 1,
-            hour = 0,
-            minute = 0,
-            second = 0,
-        )
-        date = LocalDateFormatter(localDateTime)
+    override fun onClickCalendarFocus(focus: LocalDateFormatter) {
+        this.focus = focus
+    }
+
+    override fun onChangeAlertDate(date: LocalDateFormatter) {
+        this.date = date
         updateState()
     }
 }

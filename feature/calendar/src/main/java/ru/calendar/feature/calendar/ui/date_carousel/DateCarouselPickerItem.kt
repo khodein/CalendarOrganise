@@ -10,6 +10,6 @@ class DateCarouselPickerItem {
 
     data class State(
         val focus: LocalDateFormatter,
-        val onChangeDate: ((year: Int, month: String) -> Unit)? = null
+        val onChangeDate: ((date: LocalDateFormatter) -> Unit)? = null
     )
 }
