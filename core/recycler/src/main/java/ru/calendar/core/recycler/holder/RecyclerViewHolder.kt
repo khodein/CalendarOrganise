@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.calendar.core.recycler.RecyclerItemView
 import ru.calendar.core.recycler.RecyclerState
 
-internal class RecyclerViewHolder(
+internal data class RecyclerViewHolder(
     private val view: View,
     val viewType: Int,
 ) : RecyclerView.ViewHolder(view) {

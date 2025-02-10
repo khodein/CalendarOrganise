@@ -2,7 +2,7 @@ package ru.calendar.feature.calendar.ui.calendar.delegates.params
 
 import ru.calendar.core.tools.dimension.DimensionValue
 
-data class CalendarDefaultParams(
+class CalendarDefaultParams(
     val stepWidth: Float,
     val stepHeight: Float,
     val cellWidth: Float,

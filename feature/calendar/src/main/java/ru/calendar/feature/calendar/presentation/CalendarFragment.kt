@@ -36,6 +36,9 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding, NavigatorScreen.C
 
         showAlertChangeDateFlow.filterNotNull()
             .observe(viewLifecycleOwner, ::showAlertChangeDate)
+
+        scheduleFlow.filterNotNull()
+            .observe(viewLifecycleOwner, binding.calendarSchedule::bindState)
     }
 
     private fun showAlertChangeDate(state: DateCarouselPickerItem.State) {

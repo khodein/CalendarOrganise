@@ -16,9 +16,11 @@ import kotlinx.datetime.monthsUntil
 import kotlinx.datetime.periodUntil
 import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
+import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.datetime.until
 import kotlinx.datetime.yearsUntil
+import java.time.format.DateTimeFormatter
 
 @JvmInline
 value class LocalDateFormatter(
@@ -59,6 +61,12 @@ value class LocalDateFormatter(
             val end = start.plus(1, DateTimeUnit.MONTH)
             return start.until(end, DateTimeUnit.DAY)
         }
+
+    fun getHHmmA(): String {
+        val javaLocalDateTime = localDateTime.toJavaLocalDateTime()
+        val formatter12h = DateTimeFormatter.ofPattern("HH:mm a")
+        return javaLocalDateTime.format(formatter12h)
+    }
 
     inline fun update(block: LocalDateTime.() -> LocalDateTime): LocalDateFormatter {
         return LocalDateFormatter(localDateTime.block())
@@ -146,6 +154,18 @@ value class LocalDateFormatter(
         return this.setOperation(
             quantity = quantity,
             unit = DateTimeUnit.WEEK,
+            timeZone = timeZone,
+            operator = Operator.PLUS
+        )
+    }
+
+    fun plusHour(
+        quantity: Int,
+        timeZone: TimeZone = getSystemDefault(),
+    ): LocalDateFormatter {
+        return this.setOperation(
+            quantity = quantity,
+            unit = DateTimeUnit.HOUR,
             timeZone = timeZone,
             operator = Operator.PLUS
         )

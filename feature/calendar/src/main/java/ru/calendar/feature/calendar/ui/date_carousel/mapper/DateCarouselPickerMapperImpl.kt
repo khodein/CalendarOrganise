@@ -3,7 +3,7 @@ package ru.calendar.feature.calendar.ui.date_carousel.mapper
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.Month
 import ru.calendar.core.tools.formatter.LocalDateFormatter
-import ru.calendar.feature.calendar.ui.date_carousel.model.DatePickerBuilder
+import ru.calendar.feature.calendar.ui.date_carousel.model.DatePickerBuilderModel
 
 class DateCarouselPickerMapperImpl : DateCarouselPickerMapper {
 
@@ -13,14 +13,14 @@ class DateCarouselPickerMapperImpl : DateCarouselPickerMapper {
 
     private val monthList = Month.entries.map { it.name }
 
-    override fun mapMonthList(focus: LocalDateFormatter): DatePickerBuilder {
-        return DatePickerBuilder(
+    override fun mapMonthList(focus: LocalDateFormatter): DatePickerBuilderModel {
+        return DatePickerBuilderModel(
             list = monthList.toTypedArray(),
             focusIndex = monthList.indexOf(focus.month.name)
         )
     }
 
-    override fun mapYearList(focus: LocalDateFormatter): DatePickerBuilder {
+    override fun mapYearList(focus: LocalDateFormatter): DatePickerBuilderModel {
         var year = dateNow.year - 3
         var focusIndex = 0
         val list = buildList<String>(YEARS_COUNT) {
@@ -33,7 +33,7 @@ class DateCarouselPickerMapperImpl : DateCarouselPickerMapper {
             }
         }
 
-        return DatePickerBuilder(
+        return DatePickerBuilderModel(
             list = list.toTypedArray(),
             focusIndex = focusIndex,
         )

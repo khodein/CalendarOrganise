@@ -9,7 +9,7 @@ class CalendarItem {
     }
 
     data class State(
-        val isMonth: Boolean = true,
+        val isMonth: Boolean = false,
         var isAnimate: Boolean = false,
         val date: LocalDateFormatter,
         var focus: LocalDateFormatter? = null,

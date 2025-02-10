@@ -10,6 +10,7 @@ import ru.calendar.feature.calendar.mapper.CalendarMapper
 import ru.calendar.feature.calendar.ui.calendar.CalendarItem
 import ru.calendar.feature.calendar.ui.date_carousel.DateCarouselPickerItem
 import ru.calendar.feature.calendar.ui.header.HeaderCalendarItem
+import ru.calendar.feature.calendar.ui.scheduler.ScheduleItem
 import ru.calendar.navigator.Navigator
 import java.util.Locale
 
@@ -31,6 +32,9 @@ class CalendarViewModel(
         MutableSharedFlow<DateCarouselPickerItem.State?>(replay = 1)
     val showAlertChangeDateFlow = _showAlertChangeDateFlow.asSharedFlow()
 
+    private val _scheduleFlow = MutableStateFlow<ScheduleItem.State?>(null)
+    val scheduleFlow = _scheduleFlow.asStateFlow()
+
     private var date: LocalDateFormatter = LocalDateFormatter.nowInSystemDefault().startOfTheDay()
     private var focus: LocalDateFormatter? = null
 
@@ -41,6 +45,13 @@ class CalendarViewModel(
     private fun updateState() {
         updateHeaderCalendar()
         updateCalendar()
+        updateScheduleState()
+    }
+
+    private fun updateScheduleState() {
+        _scheduleFlow.value = calendarMapper.mapSchedule(
+            focus = focus ?: LocalDateFormatter.nowInSystemDefault(),
+        )
     }
 
     private fun updateHeaderCalendar() {
@@ -61,7 +72,7 @@ class CalendarViewModel(
     }
 
     private fun updateCalendar(
-        isMonth: Boolean = calendarFlow.value?.isMonth ?: true,
+        isMonth: Boolean = calendarFlow.value?.isMonth ?: false,
         isAnimate: Boolean = false,
     ) {
         _calendarFlow.value = calendarMapper.mapCalendar(
@@ -95,6 +106,7 @@ class CalendarViewModel(
 
     override fun onClickCalendarFocus(focus: LocalDateFormatter) {
         this.focus = focus
+        updateScheduleState()
     }
 
     override fun onChangeAlertDate(date: LocalDateFormatter) {

@@ -161,6 +161,12 @@ class CalendarItemView @JvmOverloads constructor(
             setAnimateCalendarHeight()
         } else {
             setCalendarHeight()
+
+            lastCountWeekFocus?.let { count ->
+                binding.calendarItemWeek.post {
+                    binding.calendarItemWeek.scrollToPosition(count)
+                }
+            }
         }
     }
 

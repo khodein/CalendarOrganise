@@ -1,6 +1,6 @@
 package ru.calendar.feature.calendar.ui.date_carousel.model
 
-data class DatePickerBuilder(
+data class DatePickerBuilderModel(
     val list: Array<String>,
     val focusIndex: Int,
 ) {
@@ -10,7 +10,7 @@ data class DatePickerBuilder(
         if (javaClass != other?.javaClass) return false
         if (!super.equals(other)) return false
 
-        other as DatePickerBuilder
+        other as DatePickerBuilderModel
 
         if (!list.contentEquals(other.list)) return false
         if (focusIndex != other.focusIndex) return false

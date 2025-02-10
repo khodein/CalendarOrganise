@@ -13,7 +13,7 @@ class ImageItem {
         val sizeValue: SizeValue = SizeValue(),
     ) : RecyclerState {
         override val provideId: String = id
-        override val viewType: Int = id.hashCode()
+        override val viewType: Int = android.view.View.generateViewId()
         override fun getView(context: Context) = ImageItemView(context)
     }
 }

@@ -4,6 +4,7 @@ import ru.calendar.core.tools.formatter.LocalDateFormatter
 import ru.calendar.feature.calendar.ui.calendar.CalendarItem
 import ru.calendar.feature.calendar.ui.date_carousel.DateCarouselPickerItem
 import ru.calendar.feature.calendar.ui.header.HeaderCalendarItem
+import ru.calendar.feature.calendar.ui.scheduler.ScheduleItem
 
 class CalendarMapperImpl : CalendarMapper {
 
@@ -43,6 +44,12 @@ class CalendarMapperImpl : CalendarMapper {
         return DateCarouselPickerItem.State(
             focus = date,
             onChangeDate = provider::onChangeAlertDate
+        )
+    }
+
+    override fun mapSchedule(focus: LocalDateFormatter): ScheduleItem.State {
+        return ScheduleItem.State(
+            focusDate = focus
         )
     }
 }

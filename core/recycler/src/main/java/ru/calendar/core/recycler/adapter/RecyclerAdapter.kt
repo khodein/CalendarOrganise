@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.calendar.core.recycler.RecyclerState
 import ru.calendar.core.recycler.base.BaseRecyclerAdapter
 import ru.calendar.core.recycler.diff.RecyclerStateDiffCallback
+import ru.calendar.core.recycler.holder.RecyclerViewHolder
 
 class RecyclerAdapter : ListAdapter<RecyclerState, RecyclerView.ViewHolder>(
     AsyncDifferConfig.Builder(RecyclerStateDiffCallback()).build()
@@ -23,8 +24,10 @@ class RecyclerAdapter : ListAdapter<RecyclerState, RecyclerView.ViewHolder>(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (holder !is RecyclerViewHolder) return
+        val item = getItem(position)
         baseAdapter.onBindViewHolder(
-            item = getItem(position),
+            item = item,
             holder = holder,
         )
     }

@@ -12,7 +12,7 @@ import ru.calendar.core.tools.formatter.LocalDateFormatter
 import ru.calendar.feature.calendar.databinding.ViewDateCarouselPickerBinding
 import ru.calendar.feature.calendar.ui.date_carousel.mapper.DateCarouselPickerMapper
 import ru.calendar.feature.calendar.ui.date_carousel.mapper.DateCarouselPickerMapperImpl
-import ru.calendar.feature.calendar.ui.date_carousel.model.DatePickerBuilder
+import ru.calendar.feature.calendar.ui.date_carousel.model.DatePickerBuilderModel
 
 class DateCarouselPickerItemView @JvmOverloads constructor(
     context: Context,
@@ -65,8 +65,8 @@ class DateCarouselPickerItemView @JvmOverloads constructor(
         }
     }
 
-    private var yearBuilder: DatePickerBuilder? = null
-    private var monthBuilder: DatePickerBuilder? = null
+    private var yearBuilder: DatePickerBuilderModel? = null
+    private var monthBuilder: DatePickerBuilderModel? = null
 
     init {
         layoutParams = LayoutParams(
@@ -123,7 +123,7 @@ class DateCarouselPickerItemView @JvmOverloads constructor(
 
     private fun setPickerResolve(
         view: NumberPicker,
-        builder: DatePickerBuilder,
+        builder: DatePickerBuilderModel,
     ) {
         with(view) {
             minValue = 0

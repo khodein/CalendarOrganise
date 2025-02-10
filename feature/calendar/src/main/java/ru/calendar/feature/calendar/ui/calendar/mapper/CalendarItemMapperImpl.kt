@@ -122,6 +122,7 @@ class CalendarItemMapperImpl(
     ): WeekBuilderModel {
         var lastCountWeekFocus: Int = 0
         var weekCalendarHeight: Int = 0
+        val lastCountFocus = focus ?: LocalDateFormatter.today()
 
         val weekList = buildList(COUNT_WEEK) {
             val startDayOfMonth = date.startDayOfMonth().startOfTheDay()
@@ -142,7 +143,7 @@ class CalendarItemMapperImpl(
                     params = calendarParams,
                 )
 
-                if (startDayOfWeek == focus) {
+                if (startDayOfWeek == lastCountFocus) {
                     lastCountWeekFocus = count
                 }
 

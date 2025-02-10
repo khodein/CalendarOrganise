@@ -43,7 +43,6 @@ class CalendarMonthDelegateViewImpl(
         val endDayOfMonthDayOfWeek = endDayOfMonth.dayOfWeek.value
         val numberOfDaysAfterMonth = (7 - endDayOfMonthDayOfWeek) + 7
 
-
         var x: Float = startX
         var y: Float = startY
         var count = 0

@@ -6,5 +6,4 @@ class WeekBuilderModel(
     val weekList: List<WeekItem.State>,
     val height: Int,
     val lastCountWeekFocus: Int,
-) {
-}
+)

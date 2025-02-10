@@ -9,17 +9,17 @@ data class CalendarDaysOfWeekParams(
     val cell: Cell,
     val width: Int,
 ) {
-    data class Text(
+    class Text(
         @ColorInt val colorInt: Int,
         val size: Float,
         val typeface: Typeface?,
     )
 
-    data class Cell(
+    class Cell(
         val width: Float
     )
 
-    data class Step(
+    class Step(
         val width: Float
     )
 }
