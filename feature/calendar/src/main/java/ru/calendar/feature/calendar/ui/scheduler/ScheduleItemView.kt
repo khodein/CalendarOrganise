@@ -24,7 +24,8 @@ class ScheduleItemView @JvmOverloads constructor(
     }
 
     override val contentHeight: Float by lazy { scheduleTimeDelegate.getHeight() }
-    override val contentWidth: Float by lazy { screenWidth.toFloat() }
+    override val contentWidth: Float
+        get() = screenWidth.toFloat()
 
     init {
         build()
@@ -41,7 +42,7 @@ class ScheduleItemView @JvmOverloads constructor(
 
     override fun bindState(state: ScheduleItem.State) {
         this.focusDay = state.focusDate
-        buildSchedule()
+        build()
         stopScroll()
         smoothScrollToTop()
     }
