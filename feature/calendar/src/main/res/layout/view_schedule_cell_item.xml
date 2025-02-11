@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout"
+    tools:context="ru.calendar.feature.calendar.ui.scheduler.cell.ScheduleCellItemView"
+    tools:layout_height="200dp"
+    tools:paddingTop="20dp"
+    tools:paddingStart="20dp"
+    tools:background="@color/primary"
+    tools:layout_width="200dp">
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/scheduleCellTopBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="scheduleCellIcon"/>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/scheduleCellBottomBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="scheduleCellPlace"/>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/scheduleCellLeftBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="left"
+        app:constraint_referenced_ids="scheduleCellIcon"/>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/scheduleCellHeaderBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="scheduleCellPlace"/>
+
+    <ru.calendar.core.uikit.image.ImageItemView
+        android:id="@+id/scheduleCellIcon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintLeft_toRightOf="@+id/scheduleCellLeftBarrier"
+        app:layout_constraintTop_toBottomOf="@+id/scheduleCellLeftBarrier"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/avatars" />
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/scheduleCellDivider"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:alpha="0.2"
+        android:orientation="vertical"
+        app:dividerColor="@color/black"
+        app:dividerThickness="1.5.dp"
+        app:layout_constraintBottom_toBottomOf="@+id/scheduleCellIcon"
+        app:layout_constraintStart_toEndOf="@+id/scheduleCellIcon"
+        app:layout_constraintTop_toTopOf="@+id/scheduleCellIcon" />
+
+    <ru.calendar.core.uikit.text.TextItemView
+        android:id="@+id/scheduleCellPlace"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingVertical="10dp"
+        android:textAppearance="@style/Regular.16"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@+id/scheduleCellHeaderBarrier"
+        app:layout_constraintBottom_toTopOf="@+id/scheduleCellBottomBarrier"
+        app:layout_constraintLeft_toRightOf="@+id/scheduleCellLeftBarrier"
+        tools:text="sdsdsdsdsds" />
+
+
+</merge>
